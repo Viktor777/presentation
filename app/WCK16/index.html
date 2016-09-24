@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Frontend оптимизация</title>
+
+    <meta name="author" content="Viktor Kuliebiakin">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../../css/reveal.css">
+    <link rel="stylesheet" href="../../css/theme/marvel.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../../bower_components/reveal-highlight-themes/styles/vs.css" id="highlight-theme">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? '../../css/print/pdf.css' : '../../css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../../lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section class="slide-intro" data-background="red">
+                <input type="radio" name="rerun" id="retrigger--1" class="retrigger">
+                <input type="radio" name="rerun" id="retrigger--2" checked class="retrigger">
+                <div class="bg"></div>
+                <div class="pane">
+                    <div class="rotate">
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                        <h1 class="title">Frontend оптимизация</h1>
+                    </div>
+                </div>
+                <p class="author">
+                    <small>Докладчик: <a href="https://www.facebook.com/viktor.kuliebiakin" target="_blank">Виктор Кулебякин</a> / <a href="mailto:victor@pingbull.no">victor@pingbull.no</a></small>
+                </p>
+            </section>
+            <section data-background="files/images/before.jpg"></section>
+            <section data-background="files/images/after.jpg"></section>
+            <section data-background="files/images/weight-small.jpg"></section>
+            <section data-background="files/images/weight-large.jpg"></section>
+            <section>
+                <h3>Средний размер веб-страницы (kb)</h3>
+                <img src="files/images/graph.jpg" alt="Web page size" style="width: auto; height: 500px;">
+            </section>
+            <section>
+                <section>
+                    <h2>JavaScript</h2>
+                </section>
+                <section>
+                    <pre><code class="html" data-trim>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    ...
+    &lt;script src="https://path/to/file.js"&gt;&lt;/script&gt;
+    ...
+&lt;/head&gt;
+...
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code class="php" data-trim data-noescape>
+wp_enqueue_script( $handle, $src, $deps, $ver<span class="fragment">, $in_footer</span><span class="fragment"> = true</span> );
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code class="html" data-trim>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    ...
+&lt;/head&gt;
+...
+&lt;script src="https://path/to/file.js"&gt;&lt;/script&gt;
+&lt;/html&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <img src="files/images/avengers-frameworks.jpg" alt="JS frameworks">
+                </section>
+                <section>
+                    <h3>~70%</h3>
+                    <img src="files/images/deadpool.jpg" alt="jQuery" class="fragment" style="width: auto; height: 600px;">
+                </section>
+                <section>
+                    <h3>Перенесем в футер</h3>
+                    <pre><code class="php" data-trim>
+wp_scripts()->add_data( 'jquery', 'group', 1 );
+wp_scripts()->add_data( 'jquery-core', 'group', 1 );
+wp_scripts()->add_data( 'jquery-migrate', 'group', 1 );
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Добавим ассинхронности</h3>
+                    <h4 class="fragment"><span class="blue">async</span> / <span class="red">defer</span></h4>
+                </section>
+                <section>
+                    <pre><code class="php" data-trim>
+add_filter( 'script_loader_tag', function ( $tag, $handle ) {
+    return !is_admin()
+        ? str_replace( ' src', ' defer src', $tag )
+        : $tag;
+}, 10, 2 );
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code class="html" data-trim data-noescape>
+&lt;script <span class="fragment">defer</span> src="https://path/to/file.js"&gt;&lt;/script&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <h3><span class="blue">async</span> vs <span class="red">defer</span></h3>
+                    <h3 class="fragment" data-fragment-index="1">Pick a side</h3>
+                    <img src="files/images/pick-a-side.jpg" alt="Captain America vs Ironman" class="fragment" data-fragment-index="1">
+                </section>
+                <section>
+                    <p>
+                        Файл не имеет зависимостей - <span class="blue">async</span>, в других случаях <span class="red">defer</span>.
+                    </p>
+                </section>
+                <section>
+                    <pre><code class="html" data-trim>
+&lt;script&gt;
+    jQuery(function ($) {
+        ...
+    });
+&lt;/script&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Подмена jQuery</h3>
+                    <ol>
+                        <li class="fragment">
+                            Создаем вначале страницы объект jQuery и методы on, ready, load, bind ...
+                        </li>
+                        <li class="fragment">
+                            Сохраняем обработчики в глобальные массивы, например, bindReadyQ, bindLoadQ ...
+                        </li>
+                        <li class="fragment">
+                            После того как библиотека подключена проходим по элементам массивов и выполняем сохраненные обработчики
+                        </li>
+                    </ol>
+                </section>
+                <section>
+                    <dl>
+                        <dt>jquery-replacement-top.js</dt>
+                        <dd>
+                            <pre><code class="php" data-trim>
+add_action( 'wp_head', function () {
+    ?&gt;
+    &lt;script&gt;
+        // Insert inline JS code here
+    &lt;/script&gt;
+    &lt;?php
+} );
+                            </code></pre>
+                            <a href="https://goo.gl/RGHwE6" target="_blank">https://goo.gl/RGHwE6</a>
+                        </dd>
+                        <dt>jquery-replacement-bottom.js</dt>
+                        <dd>
+                            Вставляем в файл, который подключаетя после jQuery
+                            <a href="https://goo.gl/9PsZxk" target="_blank">https://goo.gl/9PsZxk</a>
+                        </dd>
+                    </dl>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Минификация и конкатенация</h2>
+                </section>
+                <section>
+                    <h3>Инструменты для сборки</h3>
+                    <ul>
+                        <li>
+                            <a href="http://gulpjs.com/" target="_blank">Gulp</a>
+                        </li>
+                        <li>
+                            <a href="http://gruntjs.com/" target="_blank">Grunt</a>
+                        </li>
+                        <li>
+                            <a href="https://webpack.github.io/" target="_blank">webpack</a>
+                        </li>
+                        <li>
+                            etc.
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Плагины</h3>
+                    <ul>
+                        <li>
+                            <a href="https://wordpress.org/plugins/autoptimize/" target="_blank">Autoptimize</a>
+                        </li>
+                        <li>
+                            <a href="https://wordpress.org/plugins/bwp-minify/" target="_blank">Better WordPress Minify</a>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Онлайн сервисы</h3>
+                    <ul>
+                        <li>
+                            <a href="https://jscompress.com/" target="_blank">jscompress.com</a>
+                        </li>
+                        <li>
+                            <a href="https://javascript-minifier.com/" target="_blank">javascript-minifier.com</a>
+                        </li>
+                        <li>
+                            <a href="http://csscompressor.com/" target="_blank">csscompressor.com</a>
+                        </li>
+                        <li>
+                            <a href="http://cssshrink.com/" target="_blank">cssshrink.com</a>
+                        </li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>CSS</h2>
+                </section>
+                <section>
+                    <h3>Асинхронная загрузка</h3>
+                </section>
+                <section>
+                    <h3>Resource Hints</h3>
+                    <pre><code class="php" data-trim>
+add_filter( 'style_loader_tag', function ( $tag, $handle ) {
+    return !is_admin()
+        ? str_replace(
+            ' rel=\'stylesheet\'',
+            ' rel=\'preload\' as=\'style\'
+                    onload=\'this.rel="stylesheet"\'',
+            $tag
+        ) . "&lt;noscript&gt;$tag&lt;/noscript&gt;"
+        : $tag;
+}, 10, 2 );
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code class="html" data-trim>
+&lt;link rel="preload" as="style" onload="this.rel='stylesheet'"
+                        href="https://path/to/file.css"&gt;
+&lt;noscript&gt;
+    &lt;link rel="stylesheet" href="https://path/to/file.css"&gt;
+&lt;/noscript&gt;
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>loadCSS</h3>
+                    <div>
+                        Для браузеров не поддерживающих <a href="http://caniuse.com/#feat=link-rel-preload" target="_blank">rel="preload"</a>, используем полифилл
+                        <pre><code class="php" data-trim>
+add_action( 'wp_head', function () {
+    ?&gt;
+    &lt;script&gt;
+        // Insert inline JS code here
+    &lt;/script&gt;
+    &lt;?php
+}, 99 );
+                        </code></pre>
+                        <a href="https://github.com/filamentgroup/loadCSS" target="_blank">https://github.com/filamentgroup/loadCSS</a>
+                    </div>
+                </section>
+                <section>
+                    <h3>Critical CSS</h3>
+                    <pre class="fragment"><code class="php" data-trim>
+add_action( 'wp_head', function () {
+    ?&gt;
+    &lt;style&gt;
+        // Insert inline CSS code here
+    &lt;/style&gt;
+    &lt;?php
+}, 1 );
+                    </code></pre>
+                    <div class="fragment">
+                        or
+                        <pre><code class="php" data-trim>
+wp_add_inline_style( $handle, 'inline styles' );
+                        </code></pre>
+                    </div>
+                </section>
+                <section>
+                    <h3>Модули</h3>
+                    <dl>
+                        <dt>Critical</dt>
+                        <dd>
+                            <a href="https://github.com/addyosmani/critical" target="_blank">https://github.com/addyosmani/critical</a>
+                        </dd>
+                        <dt>CriticalCSS</dt>
+                        <dd>
+                            <a href="https://github.com/filamentgroup/criticalCSS" target="_blank">https://github.com/filamentgroup/criticalCSS</a>
+                        </dd>
+                    </dl>
+                </section>
+                <section>
+                    <h3>Плагин</h3>
+                    <dl>
+                        <dt>Above The Fold Optimization</dt>
+                        <dd>
+                            <a href="https://wordpress.org/plugins/above-the-fold-optimization/" target="_blank">https://wordpress.org/plugins/above-the-fold-optimization/</a>
+                        </dd>
+                    </dl>
+                </section>
+                <section>
+                    <h3>Онлайн сервис</h3>
+                    <dl>
+                        <dt>Critical Path CSS Generator</dt>
+                        <dd>
+                            <a href="https://jonassebastianohlsson.com/criticalpathcssgenerator/" target="_blank">https://jonassebastianohlsson.com/criticalpathcssgenerator/</a>
+                        </dd>
+                    </dl>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Шрифты</h2>
+                </section>
+                <section>
+                    <h3>Google Fonts</h3>
+                    <pre><code class="php" data-trim>
+wp_enqueue_style(
+    'font-open-sans-regular',
+    '//fonts.googleapis.com/css?family=Open+Sans'
+);
+                    </code></pre>
+                    +
+                    <pre><code class="php" data-trim>
+wp_enqueue_style(
+    'font-open-sans-condensed',
+    '//fonts.googleapis.com/css?family=Open+Sans+Condensed'
+);
+                    </code></pre>
+                    <div class="fragment">
+                        =
+                        <pre><code class="php" data-trim>
+wp_enqueue_style(
+    'font-open-sans',
+    '//fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed'
+);
+                        </code></pre>
+                    </div>
+                </section>
+                <section>
+                    <h3>Фиксированный набор символов</h3>
+                    <pre class="fragment"><code class="php" data-trim>
+wp_enqueue_style(
+    'font-open-sans-condensed',
+    '//fonts.googleapis.com/css?family=Tangerine&text=WordPress'
+);
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>FOUT / FOIT</h3>
+                    <img src="files/images/fout-foit.jpg" alt="FOUT / FOIT">
+                </section>
+                <section>
+                    <h3>Font Face Observer</h3>
+                    <pre><code class="javascript" data-trim>
+var font = new FontFaceObserver('My Family');
+
+font.load().then(function () {
+  document.documentElement.className += " fonts-loaded";
+});
+                    </code></pre>
+                    <pre><code class="css" data-trim>
+.fonts-loaded body {
+  font-family: My Family, sans-serif;
+}
+                    </code></pre>
+                    <p>
+                        <a href="https://github.com/bramstein/fontfaceobserver" target="_blank">https://github.com/bramstein/fontfaceobserver</a>
+                    </p>
+                </section>
+            </section>
+            <section>
+                <h2>Спасибо за внимание!</h2>
+                <dl>
+                    <dt>E-mail:</dt>
+                    <dd>
+                        <a href="mailto:victor@pingbull.no">victor@pingbull.no</a>
+                    </dd>
+                    <dt>GitHub:</dt>
+                    <dd>
+                        <a href="https://github.com/Viktor777" target="_blank">https://github.com/Viktor777</a>
+                    </dd>
+                </dl>
+            </section>
+        </div>
+    </div>
+    <script src="../../lib/js/head.min.js"></script>
+    <script src="../../js/reveal.js"></script>
+    <script>
+        // Full list of configuration options available at:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // Optional reveal.js plugins
+            dependencies: [
+                { src: '../../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: '../../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() {
+                    hljs.configure({
+                        classPrefix: ''
+                    });
+                    hljs.initHighlightingOnLoad();
+                } },
+                { src: '../../plugin/zoom-js/zoom.js', async: true },
+                { src: '../../plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Customizable Options</title>
+
+    <meta name="description" content="Редактирование опций в кастомайзере с фронтенда.">
+    <meta name="author" content="Viktor Kuliebiakin">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../../css/reveal.css">
+    <link rel="stylesheet" href="../../css/theme/sky.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../../lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? '../../css/print/pdf.css' : '../../css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../../lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1>Customizable Options</h1>
+            <h3>Редактирование опций в кастомайзере с фронтенда.</h3>
+            <p>
+                <small>Докладчик: <a href="https://www.facebook.com/viktor.kuliebiakin" target="_blank">Viktor Kuliebiakin</a> / <a href="mailto:victor@pingbull.no">victor@pingbull.no</a></small>
+            </p>
+        </section>
+        <section>
+            <h2>Статические настройки</h2>
+            <p>
+                Было бы неплохо сделать, к примеру, на главной странице название блока с последними новостями редактрируемым.
+            </p>
+        </section>
+        <section>
+            <section>
+                <h3>Есть же кастомайзер!</h3>
+                <p>
+                    Давай быстро добавим.
+                </p>
+            </section>
+            <section>
+                <h3>Для начала создадим настройку</h3>
+                <p class="fragment">
+                    Хотя подожди...
+                </p>
+            </section>
+            <section>
+                <h3>Добавим хук</h3>
+                <pre><code class="php" data-trim data-noescape>
+add_action( 'customize_register', function ( $wp_customize ) {
+    // Code
+} );
+                </code></pre>
+            </section>
+            <section>
+                <h3>Теперь можно и настройку</h3>
+                <pre><code class="php" data-trim data-noescape>
+$wp_customize->add_setting( 'front_recent_news_block_title', [
+    'type' => 'option',
+    ...
+] );
+                </code></pre>
+            </section>
+            <section>
+                <h3>Control</h3>
+                <p class="fragment">
+                    Куда добавлять будем?
+                </p>
+            </section>
+            <section>
+                <img src="files/images/1.png" alt="Кастомайзер">
+            </section>
+            <section>
+                <h3>Создадим секцию</h3>
+                <pre><code class="php" data-trim data-noescape>
+$wp_customize->add_section( 'custom_text', [
+    'title' => __( 'Custom Text' ),
+    ...
+] );
+                </code></pre>
+            </section>
+            <section>
+                <h3>И снова control!</h3>
+                <pre><code class="php" data-trim data-noescape>
+$wp_customize->add_control( 'front_recent_news_block_title', [
+    'type'            => 'text',
+    'section'         => 'custom_text', // required
+    'label'           => __( 'Recent News Block Title' ),
+    'active_callback' => 'is_home'
+    ...
+] );
+                </code></pre>
+            </section>
+            <section>
+                <pre><code class="php" data-trim data-noescape>
+add_action( 'customize_register', function ( $wp_customize ) {
+    $wp_customize->add_section( 'custom_text', [
+        'title' => __( 'Custom Text' )
+    ] );
+    $wp_customize->add_setting( 'front_recent_news_block_title', [
+        'type' => 'option'
+    ] );
+    $wp_customize->add_control( 'front_recent_news_block_title', [
+        'type'            => 'text',
+        'section'         => 'custom_text', // required
+        'label'           => __( 'Recent News Block Title' ),
+        'active_callback' => 'is_home'
+    ] );
+} );
+                </code></pre>
+            </section>
+            <section>
+                <h3>Тут еще пару строк можно сделать редактируемыми</h3>
+            </section>
+            <section>
+                <pre><code class="php" data-trim data-noescape>
+add_action( 'customize_register', function ( $wp_customize ) {
+    $wp_customize->add_section( 'custom_text', [
+        'title' => __( 'Custom Text' )
+    ] );
+    $wp_customize->add_setting( 'front_recent_news_block_title', [
+        'type' => 'option'
+    ] );
+    $wp_customize->add_control( 'front_recent_news_block_title', [
+        'type'            => 'text',
+        'section'         => 'custom_text', // required
+        'label'           => __( 'Recent News Block Title' ),
+        'active_callback' => 'is_home'
+    ] );
+    $wp_customize->add_setting( 'front_newsletter_block_title', [
+        'type' => 'option'
+    ] );
+    $wp_customize->add_control( 'front_newsletter_block_title', [
+        'type'            => 'text',
+        'section'         => 'custom_text', // required
+        'label'           => __( 'Newsletter Block Title' ),
+        'active_callback' => 'is_home'
+    ] );
+    $wp_customize->add_setting( 'front_newsletter_block_description', [
+        'type' => 'option'
+    ] );
+    $wp_customize->add_control( 'front_newsletter_block_description', [
+        'type'            => 'text',
+        'section'         => 'custom_text', // required
+        'label'           => __( 'Newsletter Block Description' ),
+        'active_callback' => 'is_home'
+    ] );
+    ...
+} );
+                </code></pre>
+            </section>
+            <section>
+                <h3>Улучшим немного. <span class="fragment">postMessage</span></h3>
+                <pre class="fragment"><code class="php" data-trim data-noescape>
+$wp_customize->add_setting( 'front_recent_news_block_title', [
+    'type'      => 'option',
+    'transport' => 'postMessage'
+] );
+                </code></pre>
+            </section>
+            <section>
+                <h3>Куда ж без JavaScript?</h3>
+                <pre><code class="javascript" data-trim data-noescape>
+wp.customize('front_recent_news_block_title', function (value) {
+    value.bind(function (to) {
+        $('.front_recent_news_block_title').html(to);
+    });
+});
+                </code></pre>
+            </section>
+        </section>
+        <section>
+            <h2>"Та може, ну его? Давай <s>ху*к, х*як и в продакшен</s> хардкод сделаем и забудем..."</h2>
+            <pre class="fragment"><code class="html" data-trim data-noescape>
+&lt;h3&gt;&lt;?php _e( 'Recent News' ) ?&gt;&lt;/h3&gt;
+...
+&lt;h4&gt;&lt;?php _e( 'Newsletter' ) ?&gt;&lt;/h4&gt;
+...
+            </code></pre>
+        </section>
+        <section>
+            <section>
+                <h2>WordPress Customizable Options</h2>
+                <p>
+                    Библиотека, которая позволяет редактировать простые текстовые настройки в окне предварительного просмотра кастомайзера, с фронтенда.
+                </p>
+            </section>
+            <section>
+                <h3>Установка</h3>
+                <pre><code data-trim data-noescape>
+$ composer require viktor777/wp-customizable-options
+                </code></pre>
+            </section>
+            <section>
+                <h3>Инициализация</h3>
+                <pre><code class="php" data-trim data-noescape>
+register_customizable_options();
+                </code></pre>
+            </section>
+            <section>
+                <h3>Добавление опции на фронтенд</h3>
+                <pre class="fragment"><code class="php" data-trim data-noescape>
+the_customizable_text( $option, $default = false );
+                </code></pre>
+            </section>
+            <section>
+                <img src="files/images/2.png" alt="Section hell">
+            </section>
+            <section>
+                <ul>
+                    <li>Редактирование с фронтенда</li>
+                    <li class="fragment">По умолчанию создается секция "Customizable Options", куда добавляются все настройки, если они еще не были доавблены в существующие секции</li>
+                    <li class="fragment">По умолчанию текст оборачивается в тэг "span" и добавляется аттрибут contenteditable</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Хуки</h3>
+                <pre><code class="php" data-trim data-noescape>
+/**
+ * Change default wrapper
+ */
+add_filter( 'the_customizable_text_wrapper_tag', function () {
+    return 'div';
+} );
+                </code></pre>
+                <pre><code class="php" data-trim data-noescape>
+/**
+ * Change default filter
+ */
+
+/**
+ * Remove default filter
+ */
+remove_filter( 'the_customizable_text_value', '_the_customizable_text_value' );
+/**
+ * Lets use e.g. 'esc_url' as filter
+ */
+add_filter( 'the_customizable_text_value', function () {
+    return is_bool( $value ) ? $value : esc_url( $value );
+} );
+                </code></pre>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Демо</h2>
+            </section>
+            <section>
+                <video src="files/videos/demo.mp4" controls></video>
+                <a href="https://youtu.be/pCT5_stDPYM" target="_blank">https://youtu.be/pCT5_stDPYM</a>
+            </section>
+        </section>
+        <section>
+            <h2>GitHub</h2>
+            <p>
+                <a href="https://github.com/Viktor777/wp-customizable-options" target="_blank">https://github.com/Viktor777/wp-customizable-options</a>
+            </p>
+        </section>
+        <section>
+            <h2>Спасибо за внимание!</h2>
+            <dl>
+                <dt>E-mail:</dt>
+                <dd>
+                    <a href="mailto:victor@pingbull.no">victor@pingbull.no</a>
+                </dd>
+                <dt>GitHub:</dt>
+                <dd>
+                    <a href="https://github.com/Viktor777" target="_blank">https://github.com/Viktor777</a>
+                </dd>
+            </dl>
+        </section>
+    </div>
+</div>
+<script src="../../lib/js/head.min.js"></script>
+<script src="../../js/reveal.js"></script>
+<script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+            { src: '../../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: '../../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: '../../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+            { src: '../../plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: '../../plugin/zoom-js/zoom.js', async: true },
+            { src: '../../plugin/notes/notes.js', async: true }
+        ]
+    });
+</script>
+</body>
+</html>

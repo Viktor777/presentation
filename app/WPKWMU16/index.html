@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Кастомайзер в деле</title>
+
+    <meta name="description" content="Рассмотрим пример использования Customizer API.">
+    <meta name="author" content="Viktor Kuliebiakin">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../../css/reveal.css">
+    <link rel="stylesheet" href="../../css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../../lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? '../../css/print/pdf.css' : '../../css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../../lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Кастомайзер в деле</h1>
+                <h3>Рассмотрим пример использования Customizer API.</h3>
+                <p>
+                    <small>Докладчик: <a href="https://www.facebook.com/viktor.kuliebiakin" target="_blank">Viktor Kuliebiakin</a> / <a href="mailto:victor@pingbull.no">victor@pingbull.no</a></small>
+                </p>
+            </section>
+            <section>
+                <pre><code class="php" data-trim contenteditable>
+/**
+ * ...
+ *
+ * @since 3.4.0
+ */
+                </code></pre>
+            </section>
+            <section>
+                <img src="files/images/intro.png" alt="Customizer">
+            </section>
+            <section>
+                <h2>Из чего состоит?</h2>
+                <ul>
+                    <li class="fragment">Setting & Control</li>
+                    <li class="fragment">Section</li>
+                    <li class="fragment">Panel</li>
+                </ul>
+            </section>
+            <section>
+                <section>
+                    <h2>The Customizer API</h2>
+                    <p>
+                        "В двух словах".
+                    </p>
+                </section>
+                <section>
+                    <h3>Core Controls</h3>
+                    <ul>
+                        <li>checkbox</li>
+                        <li>select</li>
+                        <li>email</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Custom Controls, Sections, Panels</h3>
+                    <p>
+                        Наследуя базовые классы <code>WP_Customize_Control</code>, <code>WP_Customize_Section</code>, <code>WP_Customize_Panel</code>, можно создать собственный контрол, секцию, панель.
+                    </p>
+                </section>
+                <section>
+                    <h3>Setting Type</h3>
+                    <ul>
+                        <li>option</li>
+                        <li>theme_mod</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Способ передачи данных на фронтэнд (transport)</h3>
+                    <ul>
+                        <li>refresh (по умолчанию)</li>
+                        <li>postMessage</li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Билдер</h2>
+                </section>
+                <section>
+                    <img src="files/images/design.png" alt="Design">
+                </section>
+                <section>
+                    <ul>
+                        <li>Статический грид</li>
+                        <li>Пару динамических виджетов</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Builder = Panel</h3>
+                    <img src="files/images/builder-panel.png" alt="Builder">
+                </section>
+                <section>
+                    <h3>Widget = Section</h3>
+                    <img src="files/images/widget-section.png" alt="Widget">
+                </section>
+                <section>
+                    <h3>Control & Setting</h3>
+                    <img src="files/images/control-setting.png" alt="Control - Setting">
+                </section>
+                <section>
+                    <h3>Dynamic Widget</h3>
+                    <img src="files/images/dynamic-widget.png" alt="Dynamic Widget">
+                </section>
+                <section>
+                    <h3>Partial Refresh</h3>
+                    <p>
+                        Обновление данных => Обновление только виджета
+                    </p>
+                </section>
+                <section>
+                    <h3><code>refresh</code> слишком просто, <code>postMessage</code> - сложновато</h3>
+                    <pre><code class="javascript" data-trim contenteditable>
+wp.customize('setting_id', function(value) {
+    value.bind(function(to, from) {
+        /**
+         * 1. Собрать данные со всех настроек виджета
+         * 2. Отправить с помощью AJAX на сервер
+         * 3. Обработать на сервере и отправить html виджета 'клиенту'
+         * 4. Получить и заменить html виджета на новый
+         */
+    });
+});
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Двусторонняя связь</h3>
+                    <ul>
+                        <li>Открываем секцию в панели управления кастомайзера - подсвечиваем виджет на фронтенде</li>
+                        <li>Нажимаем на виджет на фронтенде - открываем секцию в панеле управления</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Виджет</h3>
+                    <pre><code class="php" data-trim contenteditable>
+class Text extends AbstractWidget
+{
+    public static get_config()
+    {
+        return [ 'title' => __( 'Text' ) ];
+    }
+
+    protected function _build_controls()
+    {
+        $this->add_control( 'text', [ 'label' => __( 'Text' ) ] );
+    }
+
+    public static function render_widget( array $data, $id, $number )
+    {
+        echo !empty( $data['text'] ) ? "<p>{$data['text']}</p>" : '';
+    }
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Не стоит забывать об оптимизации</h3>
+                    <p>
+                        Свести количество запросов к минимуму. Например, можно "вытащить" все посты один раз вначале.
+                    </p>
+                </section>
+            </section>
+            <section>
+                <h2>Результат</h2>
+                <video src="files/videos/builder.mp4" controls></video>
+            </section>
+            <section>
+                <h2>И напоследок...</h2>
+                <ul>
+                    <li class="fragment">
+                        API кастомайзера достаточно гибкое и позволяет создавать крутые фичи и не изобретать велосипед (<a href="https://developer.wordpress.org/themes/advanced-topics/customizer-api/" target="_blank">https://developer.wordpress.org/themes/advanced-topics/customizer-api/</a>).
+                    </li>
+                    <li class="fragment">
+                        Идти в ногу со временем (<a href="https://make.wordpress.org/core/" target="_blank">https://make.wordpress.org/core/</a>).
+                    </li>
+                    <li class="fragment">
+                        Рассмотренный пример сделан в виде модуля основанного на фреймворке <a href="https://github.com/REDINKno/wpkit" target="_blank">WPKit (https://github.com/REDINKno/wpkit)</a>.
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h2>Спасибо за внимание!</h2>
+                <strong>E-mail:</strong>
+                <a href="mailto:victor@pingbull.no">victor@pingbull.no</a>
+            </section>
+        </div>
+    </div>
+    <script src="../../lib/js/head.min.js"></script>
+    <script src="../../js/reveal.js"></script>
+    <script>
+        // Full list of configuration options available at:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // Optional reveal.js plugins
+            dependencies: [
+                { src: '../../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: '../../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: '../../plugin/zoom-js/zoom.js', async: true },
+                { src: '../../plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+</body>
+</html>
