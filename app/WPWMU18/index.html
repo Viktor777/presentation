@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Отложим стили на потом</title>
+
+    <meta name="description" content="Critical CSS для сайта на WordPress с использованием Serverless.">
+    <meta name="author" content="Viktor Kuliebiakin">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="../../css/reveal.css">
+    <link rel="stylesheet" href="../../css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../../lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? '../../css/print/pdf.css' : '../../css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="../../lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Отложим стили на потом</h1>
+                <h3>Critical CSS для сайта на WordPress с использованием Serverless.</h3>
+                <p>
+                    <small>Докладчик: <a href="https://www.facebook.com/viktor.kuliebiakin" target="_blank">Viktor Kuliebiakin</a> / <a href="mailto:kuliebiakin@gmail.com">kuliebiakin@gmail.com</a></small>
+                </p>
+            </section>
+            <section>
+                <h2>Давайте по порядку</h2>
+            </section>
+            <section>
+                <section>
+                    <h2>Serverless</h2>
+                </section>
+                <section>
+                    <h3>Function as a Service</h3>
+                    <ul>
+                        <li class="fragment">
+                            <a href="https://aws.amazon.com/lambda/" target="_blank">AWS Lambda</a>
+                        </li>
+                        <li class="fragment">
+                            <a href="https://cloud.google.com/functions/" target="_blank">Google Cloud Functions</a>
+                        </li>
+                        <li class="fragment">
+                            <a href="https://azure.microsoft.com/services/functions/" target="_blank">Azure Functions</a>
+                        </li>
+                        <li class="fragment">
+                            <a href="https://fnproject.io/" target="_blank">Fn Project</a>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Поддерживаемые языки</h3>
+                    <ul>
+                        <li class="fragment highlight-red visible">Node.js</li>
+                        <li>Python</li>
+                        <li class="fragment">Java</li>
+                        <li class="fragment">C#</li>
+                        <li class="fragment">Go</li>
+                        <li class="fragment">Ruby</li>
+                        <li class="fragment">... <del class="fragment">PHP</del></li>
+                    </ul>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Critical CSS</h2>
+                </section>
+                <section>
+                    <img src="files/img/criticalCSS.png" alt="Critical CSS" style="background: white;">
+                </section>
+                <section>
+                    <h3>Как его получить?</h3>
+                    <ul>
+                        <li class="fragment">npm package</li>
+                        <li class="fragment">Онлайн сервис <span class="fragment">, который использует npm package</span></li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Онлайн сервисы</h3>
+                    <dl>
+                        <dt>
+                            <a href="https://jonassebastianohlsson.com/criticalpathcssgenerator/" target="_blank">jonassebastianohlsson.com/criticalpathcssgenerator/</a>
+                        </dt>
+                        <dd>
+                            Бесплатный и примитивный.
+                        </dd>
+                        <dt>
+                            <a href="https://criticalcss.com/" target="_blank">criticalcss.com</a>
+                        </dt>
+                        <dd>
+                            Платный, имеет интеграцию с WordPress и Autoptimize плaгином.
+                        </dd>
+                    </dl>
+                </section>
+                <section>
+                    <h3>npm packages</h3>
+                    <dl>
+                        <dt>
+                            <a href="https://github.com/addyosmani/critical" target="_blank">addyosmani/critical</a>
+                        </dt>
+                        <dd>
+                            Использует penthouse, удобен при сборке статических сайтов.
+                        </dd>
+                        <dt>
+                            <a href="https://github.com/pocketjoso/penthouse" target="_blank">pocketjoso/penthouse</a>
+                        </dt>
+                        <dd>
+                            Более гибкий и, соответственно, требует больше времени на настройку.
+                        </dd>
+                        <dt>
+                            <a href="https://github.com/filamentgroup/criticalCSS" target="_blank">filamentgroup/criticalcss</a>
+                        </dt>
+                        <dd>
+                            Подобен к penthouse, менее популярен.
+                        </dd>
+                    </dl>
+                </section>
+            </section>
+            <section>
+                <h2>Что нужно чтобы это все заработало на WordPress сайте?</h2>
+                <ul>
+                    <li>WordPress плагин</li>
+                    <li>AWS Lambda функция на Node.js</li>
+                </ul>
+            </section>
+            <section>
+                <section>
+                    <h2>Задачи плагина</h2>
+                </section>
+                <section>
+                    <h3>Проверить темплейт</h3>
+                    <ul>
+                        <li>home.php</li>
+                        <li>singular.php</li>
+                        <li>template-contact.php</li>
+                        <li>404.php</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Отправить запрос на AWS Lambda</h3>
+                    <p class="fragment">
+                        Не будем первого юзера заставлять страдать.
+                    </p>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+wp_schedule_single_event( ... );
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Получить ответ от AWS Lambda</h3>
+                    <p class="fragment">
+                        Есть два варианта. Зависит от значения параметра InvocationType.
+                    </p>
+                    <ul>
+                        <li class="fragment">RequestResponse (по умолчанию)</li>
+                        <li class="fragment">Event</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>InvocationType => Event</h3>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+register_rest_route( ... );
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Authentication</h3>
+                    <p>
+                        Lambda Environment Variables.
+                    </p>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+wp_schedule_single_event( ... );
+                    </code></pre>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+$secret = wp_generate_password( ... );
+                    </code></pre>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+...->updateFunctionConfiguration( ... 'key' => $secret ... );
+                    </code></pre>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+set_transient( ..., wp_hash_password( $secret ), WEEK_IN_SECONDS );
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Версия</h3>
+                    <p>
+                        Хеш из массива стилей - название плюс версия.
+                    </p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h2>Как это привести в действие у себя на сайте</h2>
+                </section>
+                <section>
+                    <h3>wp-config.php</h3>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+define( 'AWS_LAMBDA_CRITICAL_CSS_KEY', '********************' );
+define( 'AWS_LAMBDA_CRITICAL_CSS_SECRET', '********************************' );
+define( 'AWS_LAMBDA_CRITICAL_CSS_REGION', '*********' );
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Задать список стилей</h3>
+                    <pre class="fragment"><code class="php" data-trim contenteditable>
+add_filter( 'aws_lambda_critical_css_styles', function () {
+    return [ 'theme' ];
+} );
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Что можно улучшить?</h2>
+                </section>
+                <section>
+                    <h3>Первое посещение и кеш</h3>
+                    <div class="fragment">
+                        <pre><code class="php" data-trim contenteditable>
+add_filter( 'aws_lambda_critical_css_can_print', function ( $can_print, $key, $hash ) {
+    // Проверить, посещал ли юзер страницу с текущим темплейтом
+    // и версией стилей
+
+    return true | false;
+}, 10, 3 );
+                        </code></pre>
+                        <pre><code class="php" data-trim contenteditable>
+add_action( 'aws_lambda_critical_css_printed', function ( $key, $hash ) {
+    // Можно, например, задать куку "document.cookie = ...;"
+}, 10, 2 );
+                        </code></pre>
+                    </div>
+                </section>
+                <section>
+                    <h3>Возможные проблемы</h3>
+                    <div class="fragment">
+                        <p>
+                            Поправить пути к кастомным шрифтам.
+                        </p>
+                        <pre><code class="php" data-trim contenteditable>
+add_filter( 'aws_lambda_critical_css_stylesheet', function ( $stylesheet ) {
+    $stylesheet = str_replace(
+        '../fonts/',
+        get_template_directory_uri() . '/assets/fonts/',
+        $stylesheet
+    );
+
+    return $stylesheet;
+} );
+                        </code></pre>
+                    </div>
+                </section>
+            </section>
+            <section>
+                <h2>Не может все быть гладко :)</h2>
+                <dl>
+                    <dt class="fragment">Ограничение размера исходников для AWS Lambda.<br> 50 MB (zipped) 250 MB (unzipped)</dt>
+                    <dd class="fragment">
+                        <a href="https://github.com/sambaiz/puppeteer-lambda-starter-kit" target="_blank" class="fragment">sambaiz/puppeteer-lambda-starter-kit</a>
+                    </dd>
+                    <dt class="fragment">Окружение</dt>
+                    <dd class="fragment">
+                        Docker
+                    </dd>
+                </dl>
+            </section>
+            <section>
+                <h2>Исходный код / Github</h2>
+                <ul>
+                    <li>
+                        <a href="https://github.com/innocode-digital/wp-critical-css-aws-lambda" target="_blank">innocode-digital/wp-critical-css-aws-lambda</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/innocode-digital/aws-lambda-critical-css" target="_blank">innocode-digital/aws-lambda-critical-css</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/innocode-digital/wp-deferred-loading" target="_blank">innocode-digital/wp-deferred-loading</a>
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <h2>Спасибо за внимание!</h2>
+                <strong>E-mail:</strong>
+                <a href="mailto:kuliebiakin@gmail.com">kuliebiakin@gmail.com</a>
+            </section>
+        </div>
+    </div>
+    <script src="../../lib/js/head.min.js"></script>
+    <script src="../../js/reveal.js"></script>
+    <script>
+        // Full list of configuration options available at:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+            // Optional reveal.js plugins
+            dependencies: [
+                { src: '../../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: '../../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '../../plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: '../../plugin/zoom-js/zoom.js', async: true },
+                { src: '../../plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+</body>
+</html>
